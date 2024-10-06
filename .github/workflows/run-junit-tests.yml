@@ -1,0 +1,42 @@
+
+#Modify this workfolw yml to execute jnit test, generate a html file
+#and archieve html file in workflow step
+#understand how git file works
+# offical docs of git hub file
+name: Run Java Class
+on:
+  workflow_dispatch:
+    inputs:
+      mainClass:
+        description: 'Main class to run (full package name)'
+        required: true
+        default: 'your.package.MainClass'
+
+jobs:
+  run-java:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up JDK 22
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin' # Install the JDK from Eclipse Temurin
+        java-version: '22'
+
+    - name: Compile the code
+      run: mvn compile
+
+    - name: Run JUnit tests and generate HTML report
+      run: mvn test surefire-report:report
+
+    - name: Upload Surefire HTML test report
+      uses: actions/upload-artifact@v3
+      with:
+            name: surefire-html-report
+            path: target/site/surefire-report.html
+
+    - name: Run Maven to execute the specified class
+      run: mvn exec:java -Dexec.mainClass=${{ github.event.inputs.mainClass }}
