@@ -3,7 +3,7 @@
 #and archieve html file in workflow step
 #understand how git file works
 # offical docs of git hub file
-name: Run Java Class
+name: Run junitTest Class
 on:
   workflow_dispatch:
     inputs:
